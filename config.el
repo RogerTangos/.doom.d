@@ -32,7 +32,47 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+(setq
+ display-line-numbers-type t
+ projectile-project-search-path '("~/code/" "~/Exercism/"))
+
+(use-package! org-super-agenda
+  :after org-agenda
+  :init
+  (setq org-super-agenda-groups '((:name "Today"
+                                   :time-grid t
+                                   :scheduled today)
+                                  (:name "Due today"
+                                   :deadline today)
+                                  (:name "Important"
+                                   :priority "A")
+                                  (:name "Overdue"
+                                   :deadline past)
+                                  (:name "Due soon"
+                                   :deadline future)
+                                  (:name "Big Outcomes"
+                                   :tag "bo")))
+  :config
+  (org-super-agenda-mode))
+
+(after! org
+  (map! :map org-mode-map
+        :n "M-j" #'org-metadown
+        :n "M-k" #'org-metaup))
+
+(after! org-roam
+      (setq org-roam-directory "~/Zettlr")
+      (setq deft-directory org-roam-directory
+            deft-recursive t)
+      (setq org-roam-capture-templates
+            '(("d" "default" plain (function org-roam--capture-get-point)
+                   :file-name "%<%Y-%m-%d %H:%M>-${slug}"
+                   :head "#+TITLE: ${title}\n#+roam_tags: ${TAGS}\n\n"
+                   :unnarrowed t)
+              ("p" "person" plain (function org-roam--capture-get-point)
+                   :file-name "%<%Y-%m-%d %H:%M>-${slug}"
+                   :head "#+TITLE: ${title}\n#+roam_tags: person ${TAGS}\n\n"
+                   :unnarrowed t))))
 
 
 ;; Here are some additional functions/macros that could help you configure Doom:
